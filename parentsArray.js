@@ -3,12 +3,13 @@
 function parents(){
     var day,month;
     var parentsArray = [];
+    var monthArray;
         
     for(var i = 2010,k=0; i <=2016; i++,k++){
         parentsArray[k] = {};
-        
+        monthArray = [];
         for(var j = 0; j<6; j++){
-            var monthArray = [];
+            
             var month = Math.round(randomMinMax(1,12));
                 while(monthArray.indexOf(month) !== -1){
                     month = Math.round(randomMinMax(1,12));
