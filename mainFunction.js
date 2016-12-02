@@ -1,4 +1,4 @@
-/// main function to generate transactions
+
 function randomMinMax (min,max) {
     return (min + Math.random()*(max - min))
 }
@@ -253,7 +253,8 @@ for(var i = 0;i < c.length; i++){
 }
 
 function makeTransaction(day,month,year,name){
-    var dateOfTransaction = String(day + "-" +month+"-"+year);
+    // var dateOfTransaction = String(day + "-" +month+"-"+year);
+    var dateOfTransaction = new Date(year,month-1,day);
     var currency;
     if ((year >= 2016)&&(month >= 7)){
         currency = "Byn";
@@ -261,11 +262,16 @@ function makeTransaction(day,month,year,name){
     else {
         currency = "Byr";
     }
-    var operationx = db.operations.find({"name": name,"currency":currency}).toArray();
+    if((name == "House Rent")||(name == "Parents")){
+        currency = "Usd";
+    }
+     var operationx = db.operations.find({"name": name,"currency":currency}).toArray();
     var ammount = Math.round(randomMinMax(operationx[0].ammountMin,operationx[0].ammountMax))
+    var randomTransactionName = Math.round((0 + Math.random()*((operationx[0]["transaction name"].length -1)- 0)))
     db.transactions.insertOne({
                             "date":dateOfTransaction,
-                            "name":operationx[0].name,
+                            "nameCategory":operationx[0].name,
+                            "nameTransaction":operationx[0]["transaction name"][randomTransactionName],
                             "type":operationx[0].type,
                             "ammount":ammount,
                             "currency":currency,
@@ -324,8 +330,43 @@ function run(){
             makeTransaction(dayx,monthx,yearx,"Phone");
         }
         if(clothesShoppingArrayOfTransactions[z][monthx] == dayx){
-            makeTransaction(dayx,monthx,yearx,"ClothesShopping");
+            makeTransaction(dayx,monthx,yearx,"Clothes Shopping");
         }
+        if(groceryShoppingArrayOfTransactions[z][monthx].indexOf(dayx) !== -1){
+            makeTransaction(dayx,monthx,yearx,"Grocery Shopping");
+        }
+        if(houseRentArrayOfTransactions[z][monthx] == dayx){
+            makeTransaction(dayx,monthx,yearx,"House Rent");
+        }
+        if(internetArrayOfTransactions[z][monthx] == dayx) {
+            makeTransaction(dayx,monthx,yearx,"Internet");
+        }
+        if(parentsArrayOfTransactions[z][monthx] == dayx){
+            makeTransaction(dayx,monthx,yearx,"Parents");
+        }
+        if(phoneInternetArrayOfTransactions[z][monthx] == dayx) {
+            makeTransaction(dayx,monthx,yearx,"Phone, Internet");
+        }
+        if(restArrayOfTransactions[z][monthx].indexOf(dayx) !== -1) {
+            makeTransaction(dayx,monthx,yearx,"Rest");
+        }
+        if(salaryArrayOfTransactions[z][monthx].indexOf(dayx) !== -1){
+            makeTransaction(dayx,monthx,yearx,"Salary");
+        }
+        if(studyArrayOfTransactions[z][monthx] == dayx){
+            makeTransaction(dayx,monthx,yearx,"Study");
+        }
+        if(transportArrayOfTransactions[z][monthx].indexOf(dayx) !== -1) {
+            makeTransaction(dayx,monthx,yearx,"Transport");
+        }
+        if(utilitiesArrayOfTransactions[z][monthx] == dayx) {
+            makeTransaction(dayx,monthx,yearx,"Utilities");
+        }
+        if(utilitiesPhoneArrayOfTransactions[z][monthx] == dayx) {
+            makeTransaction(dayx,monthx,yearx,"Utilities, Phone");
+        }
+
     }
     
 }
+run();
