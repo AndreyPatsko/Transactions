@@ -273,6 +273,13 @@ function generateRandomInWeek(begin,end,array){
 
 }
 
+function createAccounts(array){
+    var accoontObj = {};
+    for (var s = 0; s < array.length; s++){
+        array[s].
+    }
+}
+
 function run(){
     
     var dateArrayNew=[];
@@ -286,6 +293,8 @@ function run(){
     var beginDate = begin[0] ;
     var endDate = end[0];
     var categoriesArray = db.operations.find({}).toArray();
+
+
         for(var i = 0; i < categoriesArray.length; i++){
             switch (categoriesArray[i].period) {
                 case "Year":

@@ -1,0 +1,24 @@
+Exp,Grocery Shopping,100000,250000,Byr,3,Week,Purse
+Exp,Clothes Shopping,500000,4000000,Byr,1,Month,Purse
+Exp,Transport,100000,200000,Byr,2,Month,Purse
+Exp,Rest,200000,500000,Byr,1,Week,Purse
+Exp,Study,4000000,6000000,Byr,3,Year,Purse
+Exp,House Rent,300,350,Usd,1,Month,Safe
+Exp,Utilities,500000,1500000,Byr,1,Month,Card
+Exp,Internet,150000,350000,Byr,1,Month,Card
+Exp,Phone,100000,150000,Byr,1,Month,Card
+Exp,"Phone, Internet",50000,70000,Byr,1,Month,Card
+Exp,"Utilities, Phone",10000,15000,Byr,1,Month,Card
+Inc,Parents,600,1000,Usd,6,Year,Safe
+Inc,Salary,2000000,4000000,Byr,2,Month,Card
+Exp,Grocery Shopping,10,25,Byn,3,Week,Purse
+Exp,Clothes Shopping,50,400,Byn,1,Month,Purse
+Exp,Transport,10,20,Byn,2,Month,Purse
+Exp,Rest,20,50,Byn,1,Week,Purse
+Exp,Study,400,600,Byn,3,Year,Purse
+Exp,Utilities,50,150,Byn,1,Month,Card
+Exp,Internet,15,35,Byn,1,Month,Card
+Exp,Phone,10,15,Byn,1,Month,Card
+Exp,"Phone, Internet",5,7,Byn,1,Month,Card
+Exp,"Utilities, Phone",1,1.5,Byn,1,Month,Card
+Inc,Salary,200,400,Byn,2,Month,Card
