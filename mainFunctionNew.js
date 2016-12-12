@@ -61,16 +61,16 @@ function generateRandomInWeek(begin,end,rate){
         var endPeriod = new Date(beginPeriod);
         endPeriod = new Date(endPeriod.setDate(endPeriod.getDate()+6))
         var localArray = [];
-            while(localArray.length <= rate){
-                var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());
-                while(localArray.indexOf(randomDate) !== -1){
+            while(localArray.length < rate){
+                var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
+                while(localArray.indexOf(randomDate.getTime()) !== -1){                     //првоерить
                     randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
                 }
-            localArray.push(randomDate);    
+            localArray.push(randomDate.getTime());    
             }
         for(var i = 0 ; i < localArray.length;i++){
             var obj = {};
-            obj["Date"] = localArray[i];
+            obj["Date"] = new Date (localArray[i]);  //проверить 
             array.push(obj);    
         }
         beginPeriod = new Date(endPeriod);
