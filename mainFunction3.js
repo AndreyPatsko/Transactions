@@ -26,7 +26,6 @@ function randomDayInMonth(year,month) {
 function randomAmmount(min,max,currency) {
     var random = 0;
     random = min + Math.random()*(max - min);
-    // console.log(random);
     if((currency == "Byr")||(currency == "Usd")){
         return Math.round(random);
     }

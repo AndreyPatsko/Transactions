@@ -1,3 +1,7 @@
+function compareNumeric(a, b) {
+  if (a > b) return 1;
+  if (a < b) return -1;
+}
 // function generate random number between min and max
 function randomMinMax (min,max) {
     return (min + Math.random()*(max - min))
@@ -9,6 +13,20 @@ function randomMinMaxDate (min,max) {
 //function random кратное num
 function randMinMaxDay(min,max){
       return new Date(Math.floor(Math.floor(Math.random()*(max-min+1)+min) / 86400000) * 86400000);
+}
+// function create randomAmount from min and max 
+function randomAmount(min,max,currency) {
+    var random = 0;
+    random = min + Math.random()*(max - min);
+    if((currency == "Byr")||(currency == "Usd")){
+        return Math.round(random);
+    }
+    else if (currency == "Byn"){
+        return +(random.toFixed(2));
+    }
+    else {
+        // console.log("Input right value.")
+    }
 }
 //function create accounts from array of operations
 function accountCreate(array){
@@ -33,49 +51,91 @@ function categoriesCreate(array){
 //function get array of dates from rates collection
 function getArrayOfDates(){
     var dateArrayNew=[];
-    var dateArray = db.rates.find({},{_id:0,"date":1}).toArray();
+    var dateArray = db.rates.find({},{_id:0,"Date":1}).toArray();
     for (var t = 0; t < dateArray.length; t++){
-        dateArrayNew[t]=new Date(Date.parse(dateArray[t].date))
+        dateArrayNew[t]=new Date(Date.parse(dateArray[t].Date))
     }
     return dateArrayNew;
 }
 //function generates random dates in year. return array of objects with "date"
 function generateRandomInYears(begin,end,rate){
     var array = [];
-    // var beginPeriod = new Date(begin);
-    // var endPeriod = new Date(beginPeriod);
-    //    if()
-    return array;
-}
-//function generates random dates in month. return array of objects with "date"
-function generateRandomInMonth(begin,end,rate){
-    var array = [];
-
-    return array;
-}
-//function generates random dates in week. return array of objects with "date"
-function generateRandomInWeek(begin,end,rate){
-    var array = [];
     var beginPeriod = new Date(begin);
-        while(beginPeriod <= end){
+    while(beginPeriod < end) {
         var endPeriod = new Date(beginPeriod);
-        endPeriod = new Date(endPeriod.setDate(endPeriod.getDate()+6))
+        endPeriod = new Date(endPeriod.setFullYear(endPeriod.getFullYear()+1));
+        if(endPeriod > end) {
+            endPeriod = new Date(end);
+        }
         var localArray = [];
             while(localArray.length < rate){
                 var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
-                while(localArray.indexOf(randomDate.getTime()) !== -1){                     //првоерить
+                while((localArray.indexOf(randomDate.getTime()) !== -1)&&(randomDate == NaN)){                     //првоерить
                     randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
                 }
             localArray.push(randomDate.getTime());    
             }
         for(var i = 0 ; i < localArray.length;i++){
             var obj = {};
-            obj["Date"] = new Date (localArray[i]);  //проверить 
+            obj["Date"] = new Date(localArray[i]);  //проверить 
             array.push(obj);    
         }
         beginPeriod = new Date(endPeriod);
         }   
-        console.log(localArray) ;
+    return array;
+}
+//function generates random dates in month. return array of objects with "date"
+function generateRandomInMonth(begin,end,rate){
+    var array = [];
+    var beginPeriod = new Date(begin);
+    while(beginPeriod < end) {
+        var endPeriod = new Date(beginPeriod);
+        endPeriod = new Date(endPeriod.setMonth(endPeriod.getMonth()+1));
+        if(endPeriod > end) {
+            endPeriod = new Date(end);
+        }
+        var localArray = [];
+            while(localArray.length < rate){
+                var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
+                while((localArray.indexOf(randomDate.getTime()) !== -1)&&(randomDate == NaN)){                     //првоерить
+                    randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
+                }
+            localArray.push(randomDate.getTime());    
+            }
+        for(var i = 0 ; i < localArray.length;i++){
+            var obj = {};
+            obj["Date"] = new Date(localArray[i]);  //проверить 
+            array.push(obj);    
+        }
+        beginPeriod = new Date(endPeriod);
+        }   
+    return array;
+}
+//function generates random dates in week. return array of objects with "date"
+function generateRandomInWeek(begin,end,rate){
+    var array = [];
+    var beginPeriod = new Date(begin);
+        while(beginPeriod < end){
+        var endPeriod = new Date(beginPeriod);
+        endPeriod = new Date(endPeriod.setDate(endPeriod.getDate()+6));
+        if (endPeriod > end){
+            endPeriod = new Date(end);
+        }
+        var localArray = [];
+            while(localArray.length < rate){
+                var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
+                while((localArray.indexOf(randomDate.getTime()) !== -1)&&(randomDate == NaN)){                     //првоерить
+                    randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
+                }
+            localArray.push(randomDate.getTime());    
+            }
+        for(var i = 0 ; i < localArray.length;i++){
+            var obj = {};
+            obj["Date"] = new Date(localArray[i]);  //проверить 
+            array.push(obj);    
+        }
+        beginPeriod = new Date(endPeriod);
+        }   
     return array;
 }
 
@@ -85,8 +145,8 @@ function run(){
     var denominationDate = new Date(2016,06,01);
 //getting array of dates from the collection rates and get beginDate and endDate   
     var dateArray = getArrayOfDates();
-    var begin = dateArrayNew.sort(compareNumeric).slice(0,1)
-    var end = dateArrayNew.sort(compareNumeric).reverse().slice(0,1); 
+    var begin = dateArray.sort(compareNumeric).slice(0,1)
+    var end = dateArray.sort(compareNumeric).reverse().slice(0,1); 
 //getting array of operations from collection operations
     var operationsArray = db.getCollection("operations").find({}).toArray();
 //createing collection of accounts and collection of categories
@@ -106,7 +166,7 @@ function run(){
             endDate = end[0];
         }
 // generate array of dates depends of period of operation
-        switch (categoriesArray[i]["Period"]) {
+        switch (operationsArray[i]["Period"]) {
                 case "Year":
                     var dateArray = generateRandomInYears(beginDate,endDate,operationsArray[i]["Rate"]);
                     break;
@@ -117,17 +177,25 @@ function run(){
                     var dateArray = generateRandomInWeek(beginDate,endDate,operationsArray[i]["Rate"]);
                     break;
             }
-//make array of transactions from array of dates adding need fields            
-        var transactionsArray = dateArray.map() //not complete yet may be just insert in dateArray new fields not maping
+        var accountForOperation = operationsArray[i]["Account"]+operationsArray[i]["Currency"];   
+        var neededAccountArray = db.accounts.find({"accountName":accountForOperation}).toArray(); 
+        var categoryForOperation = operationsArray[i]["Operation"];   
+        var neededCategorytArray = db.categories.find({"categoryName":categoryForOperation}).toArray();    
+//make array of transactions from array of dates adding need fields   
+        for(var j = 0; j < dateArray.length; j++){
+
+            dateArray[j]["Type"] = operationsArray[i]["Type"];
+            dateArray[j]["OperationName"] = " ";
+            dateArray[j]["Currency"] = operationsArray[i]["Currency"];
+            dateArray[j]["Amount"] = randomAmount(operationsArray[i]["AmountMin"],operationsArray[i]["AmountMax"],operationsArray[i]["Currency"]);
+            dateArray[j]["AccountId"] = neededAccountArray[0]["_id"];
+            dateArray[j]["CategoryId"] = neededCategorytArray[0]["_id"];
+        }
 //insert array of transactions into collection transactions
-        db.trabsactions.insertMany(transactionsArray,{"ordered":false,w:0});
+        db.transactions.insertMany(dateArray,{"ordered":false,w:0});
     }
 }
 run();
 
 
 
-//function random кратное num
-// function rand(min,max,num){
-//       return Math.floor(Math.floor(Math.random()*(max-min+1)+min) / num) * num;
-// }
