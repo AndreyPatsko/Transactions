@@ -70,7 +70,7 @@ function generateRandomInYears(begin,end,rate){
         var localArray = [];
             while(localArray.length < rate){
                 var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
-                while((localArray.indexOf(randomDate.getTime()) !== -1)&&(randomDate == NaN)){                     //првоерить
+                while((localArray.indexOf(randomDate.getTime()) !== -1)||(randomDate == NaN)){                     //првоерить
                     randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
                 }
             localArray.push(randomDate.getTime());    
@@ -97,7 +97,7 @@ function generateRandomInMonth(begin,end,rate){
         var localArray = [];
             while(localArray.length < rate){
                 var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
-                while((localArray.indexOf(randomDate.getTime()) !== -1)&&(randomDate == NaN)){                     //првоерить
+                while((localArray.indexOf(randomDate.getTime()) !== -1)||(randomDate == NaN)){                     //првоерить
                     randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
                 }
             localArray.push(randomDate.getTime());    
@@ -124,8 +124,8 @@ function generateRandomInWeek(begin,end,rate){
         var localArray = [];
             while(localArray.length < rate){
                 var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
-                while((localArray.indexOf(randomDate.getTime()) !== -1)&&(randomDate == NaN)){                     //првоерить
-                    randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
+                while((localArray.indexOf(randomDate.getTime()) !== -1)||(randomDate == NaN)){                     //првоерить
+                    randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());
                 }
             localArray.push(randomDate.getTime());    
             }
@@ -135,6 +135,7 @@ function generateRandomInWeek(begin,end,rate){
             array.push(obj);    
         }
         beginPeriod = new Date(endPeriod);
+        beginPeriod = new Date(beginPeriod.setDate(beginPeriod.getDate()+1));
         }   
     return array;
 }
@@ -158,7 +159,7 @@ function run(){
         if(operationsArray[i]["Currency"] == "Byr"){
             beginDate = begin[0];
             endDate = denominationDate;
-        }else if(operationsArray[i]["Currency" == "Byn"]){
+        }else if(operationsArray[i]["Currency"] == "Byn"){
             beginDate = denominationDate;
             endDate = end[0];
         }else {
@@ -192,8 +193,9 @@ function run(){
             dateArray[j]["CategoryId"] = neededCategorytArray[0]["_id"];
         }
 //insert array of transactions into collection transactions
-        db.transactions.insertMany(dateArray,{"ordered":false,w:0});
+         db.transactions.insertMany(dateArray,{"ordered":false,w:0});
     }
+   
 }
 run();
 
