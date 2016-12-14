@@ -140,6 +140,21 @@ function generateRandomInWeek(begin,end,rate){
     return array;
 }
 
+var operationsNamesArrays = {
+    "Grocery Shopping":["Buy beer","Buy chips","Buy milk","Buy suasages","Buy pelmeni"],
+    "Transport":["Buy monthly pass","Take taxi"],
+    "Study":["Part of payment 1","Part of payment 2","Bride teacher"],
+    "House Rent":["Payment to owner 1","Payment to owner 2"],
+    "Utilities":["Payment for water","Payment for gas","Payment for TV"],
+    "Clothes Shopping":["Buy guins","Buy shirt","Buy boots","Buy jacket"],
+    "Rest":["Go to the cinema","Go to the bar","Go to Zoo","Go to the theatre"],
+    "Phone":["Pay for mobile","Promised payment"],
+    "Parents":["Celebration 1","Celebration 2","Humanitarian relief"],
+    "Salary":["Prepayment","Main payment","Other sources of income"],
+    "Internet":["Pay to ByFly 1","Pay to ByFly 2"],
+    "Phone, Internet":["Pay to MTS","Pay to Velcome"],
+    "Utilities, Phone":["Pay for mobile to MTS","Pay for mobile to Velcome"]
+}
 // main function
 function run(){
     var beginDate,endDate;
@@ -184,9 +199,10 @@ function run(){
         var neededCategorytArray = db.categories.find({"categoryName":categoryForOperation}).toArray();    
 //make array of transactions from array of dates adding need fields   
         for(var j = 0; j < dateArray.length; j++){
+            var randomOperationName = Math.round((0 + Math.random()*((operationsNamesArrays[operationsArray[i]["Operation"]].length -1)- 0)))
 
             dateArray[j]["Type"] = operationsArray[i]["Type"];
-            dateArray[j]["OperationName"] = " ";
+            dateArray[j]["OperationName"] = operationsNamesArrays[operationsArray[i]["Operation"]][randomOperationName];
             dateArray[j]["Currency"] = operationsArray[i]["Currency"];
             dateArray[j]["Amount"] = randomAmount(operationsArray[i]["AmountMin"],operationsArray[i]["AmountMax"],operationsArray[i]["Currency"]);
             dateArray[j]["AccountId"] = neededAccountArray[0]["_id"];
