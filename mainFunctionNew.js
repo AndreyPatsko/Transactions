@@ -12,7 +12,7 @@ function randomMinMaxDate (min,max) {
 }
 //function random кратное num
 function randMinMaxDay(min,max){
-      return new Date(Math.floor(Math.floor(Math.random()*(max-min+1)+min) / 86400000) * 86400000);
+      return Math.floor(Math.floor(Math.random()*(max-min+1)+min)/86400000)*86400000
 }
 // function create randomAmount from min and max 
 function randomAmount(min,max,currency) {
@@ -70,10 +70,10 @@ function generateRandomInYears(begin,end,rate){
         var localArray = [];
             while(localArray.length < rate){
                 var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
-                while((localArray.indexOf(randomDate.getTime()) !== -1)||(randomDate == NaN)){                     //првоерить
-                    randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
+                while((isNaN(randomDate)||(localArray.indexOf(randomDate) !== -1))){                     //првоерить
+                    randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());
                 }
-            localArray.push(randomDate.getTime());    
+            localArray.push(randomDate) 
             }
         for(var i = 0 ; i < localArray.length;i++){
             var obj = {};
@@ -97,10 +97,10 @@ function generateRandomInMonth(begin,end,rate){
         var localArray = [];
             while(localArray.length < rate){
                 var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
-                while((localArray.indexOf(randomDate.getTime()) !== -1)||(randomDate == NaN)){                     //првоерить
-                    randomDate = randMinMaxDay(beginPeriod.getTime,endPeriod.getTime);
+                while((isNaN(randomDate)||(localArray.indexOf(randomDate) !== -1))){                     //првоерить
+                    randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());
                 }
-            localArray.push(randomDate.getTime());    
+            localArray.push(randomDate);    
             }
         for(var i = 0 ; i < localArray.length;i++){
             var obj = {};
@@ -124,10 +124,10 @@ function generateRandomInWeek(begin,end,rate){
         var localArray = [];
             while(localArray.length < rate){
                 var randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());   //проверить
-                while((localArray.indexOf(randomDate.getTime()) !== -1)||(randomDate == NaN)){                     //првоерить
+                while((isNaN(randomDate)||(localArray.indexOf(randomDate) !== -1))){                     //првоерить
                     randomDate = randMinMaxDay(beginPeriod.getTime(),endPeriod.getTime());
                 }
-            localArray.push(randomDate.getTime());    
+            localArray.push(randomDate);    
             }
         for(var i = 0 ; i < localArray.length;i++){
             var obj = {};
