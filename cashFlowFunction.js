@@ -7,8 +7,7 @@ function getArrayOfDates(){
     var dateArrayNew=[];
     var dateArray = db.rates.find({},{_id:0,"Date":1}).toArray();
     for (var t = 0; t < dateArray.length; t++){
-        dateArrayNew[t]=new Date(Date.parse(dateArray[t].Date))
-        dateArrayNew[t].setHours(3);// need thmsing do with dates
+        dateArrayNew[t] = dateArray[t]["Date"];
     }
     return dateArrayNew;
 }
@@ -28,7 +27,7 @@ function create(){
     db.cashFlow.remove({});
     db.transactions.createIndex({"Date":1});
     // for(var i = 0; i < dateArray.length; i++){
-        while(beginDate < endDate){
+        while(beginDate <= endDate){
         var transactionsOfDateArray = db.getCollection('transactions').find({Date:beginDate}).toArray();
         for(var j = 0; j < transactionsOfDateArray.length; j++){
             if(transactionsOfDateArray[j]["Type"] == "Exp"){
