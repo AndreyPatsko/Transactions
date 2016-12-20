@@ -53,7 +53,8 @@ function getArrayOfDates(){
     var dateArrayNew=[];
     var dateArray = db.rates.find({},{_id:0,"Date":1}).toArray();
     for (var t = 0; t < dateArray.length; t++){
-        dateArrayNew[t]=new Date(Date.parse(dateArray[t].Date))
+       // dateArrayNew[t]=new Date(Date.parse(dateArray[t].Date))
+       dateArrayNew[t] = dateArray[t]["Date"];
     }
     return dateArrayNew;
 }
@@ -161,7 +162,7 @@ function run(){
     var denominationDate = new Date(2016,06,01);
 //getting array of dates from the collection rates and get beginDate and endDate   
     var dateArray = getArrayOfDates();
-    var begin = dateArray.sort(compareNumeric).slice(0,1)
+    var begin = dateArray.sort(compareNumeric).slice(0,1);
     var end = dateArray.sort(compareNumeric).reverse().slice(0,1); 
 //getting array of operations from collection operations
     var operationsArray = db.getCollection("operations").find({}).toArray();
