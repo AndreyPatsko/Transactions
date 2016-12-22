@@ -176,7 +176,7 @@ function run(){
             beginDate = begin[0];
             endDate = denominationDate;
         }else if(operationsArray[i]["Currency"] == "Byn"){
-            beginDate = denominationDate;
+            beginDate = new Date(2016,06,01,03,0,0,0);
             endDate = end[0];
         }else {
             beginDate = begin[0];
