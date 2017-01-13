@@ -62,7 +62,7 @@ function create(){
                 "Byn":Byn,
                 "Usd":Usd
         });
-        beginDate = new Date(beginDate.setDate(beginDate.getDate()+1));
+        beginDate = new Date(beginDate.setUTCDate(beginDate.getUTCDate()+1));
     }
 }
 create();
