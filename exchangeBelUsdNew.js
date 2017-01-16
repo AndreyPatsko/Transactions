@@ -8,24 +8,30 @@ function exchange(){
         var usd = cashFlowArray[i]['Usd'];
         var byr = cashFlowArray[i]['Byr'];
         var byn = cashFlowArray[i]['Byn'];
-        var date = cashFlowArray[i]["Date"];
-
-        if( date < denominationDate){
+        
+        if( cashFlowArray[i]["Date"] < denominationDate){
 
                 if((usd > 0)&&(byr < 0)){
                     var byrPlus = Math.abs(byr);
                     var needUsd = Math.ceil(byrPlus/ratesArray[i]["Rate"]);
                     if(needUsd > usd){
-                        var ammountUsd = 0 - usd;
                         var ammountByr = Math.ceil(usd*ratesArray[i]["Rate"]);
+                        var ammountUsd = 0 - usd;
                         byr += ammountByr;
                         usd = 0;
                         db.transactions.insertOne({
                                     "Date": cashFlowArray[i]["Date"],
-                                    "Type": "exchange",
+                                    "Type": "Exp",
                                     "Currency": "Usd",
-                                    "Ammount": Math.abs(ammountUsd)
+                                    "Amount": Math.abs(ammountUsd)
                         });
+                        db.transactions.insertOne({
+                                    "Date": cashFlowArray[i]["Date"],
+                                    "Type": "Inc",
+                                    "Currency": "Byr",
+                                    "Amount": ammountByr
+                        });
+                        
                         cashFlowArray[i]['Usd'] = usd;
                         cashFlowArray[i]['Byr'] = byr;
                         cashFlowArray[i]['Byn'] = byn;
@@ -34,15 +40,21 @@ function exchange(){
                                 cashFlowArray[j]['Usd'] += ammountUsd;
                             }
                     }else if(needUsd < usd){
-                        var ammountUsd =  0 - needUsd;
                         var ammountByr = Math.ceil(needUsd*ratesArray[i]["Rate"]);
+                        var ammountUsd =  0 - needUsd;
                         usd -= needUsd;
                         byr += ammountByr;
                         db.transactions.insertOne({
-                                "Date": cashFlowArray[i]["Date"],
-                                "Type": "exchange",
-                                "Currency": "Usd",
-                                "Ammount": needUsd
+                                    "Date": cashFlowArray[i]["Date"],
+                                    "Type": "Exp",
+                                    "Currency": "Usd",
+                                    "Amount": Math.abs(ammountUsd)
+                        });
+                        db.transactions.insertOne({
+                                    "Date": cashFlowArray[i]["Date"],
+                                    "Type": "Inc",
+                                    "Currency": "Byr",
+                                    "Amount": ammountByr
                         });
                         cashFlowArray[i]['Usd'] = usd;
                         cashFlowArray[i]['Byr'] = byr;
@@ -56,15 +68,22 @@ function exchange(){
                     var usdPlus = Math.abs(usd);
                     var needByr = Math.ceil(usdPlus*ratesArray[i]["Rate"]);
                         if(needByr > byr){
-                            var ammountByr = 0 - byr;
-                            var ammountUsd = Math.ceil(byr/ratesArray[i]["Rate"]);
+                            
+                            var ammountUsd = Math.floor(byr/ratesArray[i]["Rate"]);
+                            var ammountByr = 0 - ammountUsd*ratesArray[i]["Rate"];
                             usd += ammountUsd;
-                            byr = 0;
+                            byr = byr - Math.abs(ammountByr);
                             db.transactions.insertOne({
                                     "Date": cashFlowArray[i]["Date"],
-                                    "Type": "exchange",
-                                    "Currency": "Byr",
-                                    "Ammount": Math.abs(ammountByr)
+                                    "Type": "Inc",
+                                    "Currency": "Usd",
+                                    "Amount": ammountUsd
+                            });
+                            db.transactions.insertOne({
+                                        "Date": cashFlowArray[i]["Date"],
+                                        "Type": "Exp",
+                                        "Currency": "Byr",
+                                        "Amount": Math.abs(ammountByr)
                             });
                             cashFlowArray[i]['Usd'] = usd;
                             cashFlowArray[i]['Byr'] = byr;
@@ -74,15 +93,21 @@ function exchange(){
                                 cashFlowArray[j]['Usd'] += ammountUsd;
                             }
                         }else if(needByr < byr){
-                            var ammountUsd = Math.ceil(needByr/ratesArray[i]["Rate"]);
-                            var ammountByr = 0 - needByr;
-                            byr -= needByr;
+                            var ammountUsd = usdPlus;
+                            var ammountByr = 0 - ammountUsd*ratesArray[i]["Rate"];
+                            byr = byr - Math.abs(ammountByr);
                             usd += ammountUsd;
                             db.transactions.insertOne({
                                     "Date": cashFlowArray[i]["Date"],
-                                    "Type": "exchange",
-                                    "Currency": "Byr",
-                                    "Ammount": needByr
+                                    "Type": "Inc",
+                                    "Currency": "Usd",
+                                    "Amount": ammountUsd
+                            });
+                            db.transactions.insertOne({
+                                        "Date": cashFlowArray[i]["Date"],
+                                        "Type": "Exp",
+                                        "Currency": "Byr",
+                                        "Amount": Math.abs(ammountByr)
                             });
                             cashFlowArray[i]['Usd'] = usd;
                             cashFlowArray[i]['Byr'] = byr;
@@ -93,13 +118,27 @@ function exchange(){
                             }
                         }
                 }
-        }else if(date >= denominationDate){
+        }else if(cashFlowArray[i]["Date"] >= denominationDate){
            
-                    if((date >= denominationDate)&&(byr != 0)){
-                                byn += Math.round(byr/10000);
+                    if((cashFlowArray[i]["Date"] >= denominationDate)&&(byr != 0)){
+                                var ammountByr = byr;
+                                var newByn = Math.round(ammountByr/10000);
+                                byn += newByn;
                                 byr = 0;
                                 cashFlowArray[i]['Byn'] = byn;
                                 cashFlowArray[i]['Byr'] = byr;
+                                db.transactions.insertOne({
+                                        "Date": cashFlowArray[i]["Date"],
+                                        "Type": "Exp",
+                                        "Currency": "Byr",
+                                        "Amount": ammountByr
+                                });
+                                db.transactions.insertOne({
+                                        "Date": cashFlowArray[i]["Date"],
+                                        "Type": "Inc",
+                                        "Currency": "Byn",
+                                        "Amount": newByn
+                                });
                                 for(var j = i+1;j < cashFlowArray.length; j++){
                                             cashFlowArray[j]['Byr'] = byr; 
                                             cashFlowArray[j]['Byn'] += byn;  
@@ -110,15 +149,21 @@ function exchange(){
                         var bynPlus = Math.abs(byn);
                         var needUsd = Math.ceil(bynPlus/ratesArray[i]["Rate"]);
                         if(needUsd > usd){
-                            var ammountUsd = 0 - usd;
                             var ammountByn = Math.ceil(usd*ratesArray[i]["Rate"]);
+                            var ammountUsd = 0 - usd;
                             byn += ammountByn;
                             usd = 0;
                             db.transactions.insertOne({
+                                    "Date": cashFlowArray[i]["Date"],
+                                    "Type": "Exp",
+                                    "Currency": "Usd",
+                                    "Amount": Math.abs(ammountUsd)
+                            });
+                            db.transactions.insertOne({
                                         "Date": cashFlowArray[i]["Date"],
-                                        "Type": "exchange",
-                                        "Currency": "Usd",
-                                        "Ammount": Math.abs(ammountUsd)
+                                        "Type": "Inc",
+                                        "Currency": "Byn",
+                                        "Amount": ammountByn
                             });
                             cashFlowArray[i]['Usd'] = usd;
                             cashFlowArray[i]['Byr'] = byr;
@@ -128,15 +173,21 @@ function exchange(){
                                     cashFlowArray[j]['Usd'] += ammountUsd;
                                 }
                         }else if(needUsd < usd){
-                            var ammountUsd = 0 - needUsd;
                             var ammountByn = Math.ceil(needUsd*ratesArray[i]["Rate"]);
+                            var ammountUsd =  0 - needUsd;
                             usd -= needUsd;
                             byn += ammountByn;
                             db.transactions.insertOne({
                                     "Date": cashFlowArray[i]["Date"],
-                                    "Type": "exchange",
+                                    "Type": "Exp",
                                     "Currency": "Usd",
-                                    "Ammount": needUsd
+                                    "Amount": Math.abs(ammountUsd)
+                            });
+                            db.transactions.insertOne({
+                                        "Date": cashFlowArray[i]["Date"],
+                                        "Type": "Inc",
+                                        "Currency": "Byn",
+                                        "Amount": ammountByn
                             });
                             cashFlowArray[i]['Usd'] = usd;
                             cashFlowArray[i]['Byr'] = byr;
@@ -150,15 +201,21 @@ function exchange(){
                         var usdPlus = Math.abs(usd);
                         var needByn = Math.ceil(usdPlus*ratesArray[i]["Rate"]);
                             if(needByn > byn){
-                                var ammountByn = 0 - byn;
-                                var ammountUsd = Math.ceil(byn/ratesArray[i]["Rate"]);
+                                var ammountUsd = Math.floor(byn/ratesArray[i]["Rate"]);
+                                var ammountByn = 0 - ammountUsd*ratesArray[i]["Rate"];
                                 usd += ammountUsd;
-                                byn = 0;
+                                byn = byn - Math.abs(ammountByn);
                                 db.transactions.insertOne({
-                                        "Date": cashFlowArray[i]["Date"],
-                                        "Type": "exchange",
-                                        "Currency": "Byn",
-                                        "Ammount": Math.abs(ammountByn)
+                                    "Date": cashFlowArray[i]["Date"],
+                                    "Type": "Inc",
+                                    "Currency": "Usd",
+                                    "Amount": ammountUsd
+                                });
+                                db.transactions.insertOne({
+                                            "Date": cashFlowArray[i]["Date"],
+                                            "Type": "Exp",
+                                            "Currency": "Byn",
+                                            "Amount": Math.abs(ammountByn)
                                 });
                                 cashFlowArray[i]['Usd'] = usd;
                                 cashFlowArray[i]['Byr'] = byr;
@@ -168,15 +225,21 @@ function exchange(){
                                     cashFlowArray[j]['Usd'] += ammountUsd;
                                 }
                             }else if(needByn < byn){
-                                var ammountUsd = Math.ceil(needUsd*ratesArray[i]["Rate"]);
-                                var ammountByn = 0 - needByn;
-                                byn -= needByn;
+                                var ammountUsd = usdPlus;
+                                var ammountByn = 0 - ammountUsd*ratesArray[i]["Rate"];
+                                byn = byn - Math.abs(ammountByn);
                                 usd += ammountUsd;
                                 db.transactions.insertOne({
-                                        "Date": cashFlowArray[i]["Date"],
-                                        "Type": "exchange",
-                                        "Currency": "Byn",
-                                        "Ammount": needByn
+                                    "Date": cashFlowArray[i]["Date"],
+                                    "Type": "Inc",
+                                    "Currency": "Usd",
+                                    "Amount": ammountUsd
+                                });
+                                db.transactions.insertOne({
+                                            "Date": cashFlowArray[i]["Date"],
+                                            "Type": "Exp",
+                                            "Currency": "Byn",
+                                            "Amount": Math.abs(ammountByn)
                                 });
                                 cashFlowArray[i]['Usd'] = usd;
                                 cashFlowArray[i]['Byr'] = byr;
@@ -189,7 +252,7 @@ function exchange(){
                     }
         } 
     }
-    db.cashFlow.remove({});
-    db.cashFlow.insertMany(cashFlowArray,{"ordered":false,w:0})
+    // db.cashFlow.remove({});
+    // db.cashFlow.insertMany(cashFlowArray,{"ordered":false,w:0})
 }
 exchange();
