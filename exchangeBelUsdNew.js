@@ -23,13 +23,17 @@ function exchange(){
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Exp",
                                     "Currency": "Usd",
-                                    "Amount": Math.abs(ammountUsd)
+                                    "Amount": Math.abs(ammountUsd),
+                                    "AccountId":"SafeUsd",
+                                    "OperationName" : "Currency Exchange"
                         });
                         db.transactions.insertOne({
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Inc",
                                     "Currency": "Byr",
-                                    "Amount": ammountByr
+                                    "Amount": ammountByr,
+                                    "AccountId":"PurseByr",
+                                    "OperationName" : "Currency Exchange"
                         });
                         
                         cashFlowArray[i]['Usd'] = usd;
@@ -48,13 +52,17 @@ function exchange(){
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Exp",
                                     "Currency": "Usd",
-                                    "Amount": Math.abs(ammountUsd)
+                                    "Amount": Math.abs(ammountUsd),
+                                    "AccountId":"SafeUsd",
+                                    "OperationName" : "Currency Exchange"
                         });
                         db.transactions.insertOne({
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Inc",
                                     "Currency": "Byr",
-                                    "Amount": ammountByr
+                                    "Amount": ammountByr,
+                                    "AccountId":"PurseByr",
+                                    "OperationName" : "Currency Exchange"
                         });
                         cashFlowArray[i]['Usd'] = usd;
                         cashFlowArray[i]['Byr'] = byr;
@@ -77,13 +85,17 @@ function exchange(){
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Inc",
                                     "Currency": "Usd",
-                                    "Amount": ammountUsd
+                                    "Amount": ammountUsd,
+                                    "AccountId":"SafeUsd",
+                                    "OperationName" : "Currency Exchange"
                             });
                             db.transactions.insertOne({
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Exp",
                                         "Currency": "Byr",
-                                        "Amount": Math.abs(ammountByr)
+                                        "Amount": Math.abs(ammountByr),
+                                        "AccountId":"PurseByr",
+                                        "OperationName" : "Currency Exchange"
                             });
                             cashFlowArray[i]['Usd'] = usd;
                             cashFlowArray[i]['Byr'] = byr;
@@ -101,13 +113,17 @@ function exchange(){
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Inc",
                                     "Currency": "Usd",
-                                    "Amount": ammountUsd
+                                    "Amount": ammountUsd,
+                                    "AccountId":"SafeUsd",
+                                    "OperationName" : "Currency Exchange"
                             });
                             db.transactions.insertOne({
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Exp",
                                         "Currency": "Byr",
-                                        "Amount": Math.abs(ammountByr)
+                                        "Amount": Math.abs(ammountByr),
+                                        "AccountId":"PurseByr",
+                                        "OperationName" : "Currency Exchange"
                             });
                             cashFlowArray[i]['Usd'] = usd;
                             cashFlowArray[i]['Byr'] = byr;
@@ -127,17 +143,43 @@ function exchange(){
                                 byr = 0;
                                 cashFlowArray[i]['Byn'] = byn;
                                 cashFlowArray[i]['Byr'] = byr;
+
+                                var PurseByrExp = db.transactions.aggregate([{$match:{"AccountId":"PurseByr",Type:"Exp"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
+                                var CardByrExp = db.transactions.aggregate([{$match:{"AccountId":"CardByr",Type:"Exp"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
+                                var CardByrInc = db.transactions.aggregate([{$match:{"AccountId":"CardByr",Type:"Inc"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
+
+
                                 db.transactions.insertOne({
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Exp",
                                         "Currency": "Byr",
-                                        "Amount": ammountByr
+                                        "Amount":0 - PurseByrExp[0].Amount,
+                                        "AccountId":"PurseByr",
+                                        "OperationName" : "Transfer"
+                                });
+                                db.transactions.insertOne({
+                                        "Date": cashFlowArray[i]["Date"],
+                                        "Type": "Exp",
+                                        "Currency": "Byr",
+                                        "Amount": CardByrInc[0].Amount - CardByrExp[0].Amount,
+                                        "AccountId":"CardByr",
+                                        "OperationName" : "Transfer"
                                 });
                                 db.transactions.insertOne({
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Inc",
                                         "Currency": "Byn",
-                                        "Amount": newByn
+                                        "Amount": 0 - Math.round(PurseByrExp[0].Amount/10000),
+                                        "AccountId":"PurseByn",
+                                        "OperationName" : "Transfer"
+                                });
+                                db.transactions.insertOne({
+                                        "Date": cashFlowArray[i]["Date"],
+                                        "Type": "Inc",
+                                        "Currency": "Byn",
+                                        "Amount":0 - Math.round((CardByrInc[0].Amount - CardByrExp[0].Amount)/10000),
+                                        "AccountId":"PurseByr",
+                                        "OperationName" : "Transfer"
                                 });
                                 for(var j = i+1;j < cashFlowArray.length; j++){
                                             cashFlowArray[j]['Byr'] = byr; 
@@ -157,13 +199,17 @@ function exchange(){
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Exp",
                                     "Currency": "Usd",
-                                    "Amount": Math.abs(ammountUsd)
+                                    "Amount": Math.abs(ammountUsd),
+                                    "AccountId":"SafeUsd",
+                                    "OperationName" : "Currency Exchange"
                             });
                             db.transactions.insertOne({
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Inc",
                                         "Currency": "Byn",
-                                        "Amount": ammountByn
+                                        "Amount": ammountByn,
+                                        "AccountId":"PurseByn",
+                                        "OperationName" : "Currency Exchange"
                             });
                             cashFlowArray[i]['Usd'] = usd;
                             cashFlowArray[i]['Byr'] = byr;
@@ -181,13 +227,17 @@ function exchange(){
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Exp",
                                     "Currency": "Usd",
-                                    "Amount": Math.abs(ammountUsd)
+                                    "Amount": Math.abs(ammountUsd),
+                                    "AccountId":"SafeUsd",
+                                    "OperationName" : "Currency Exchange"
                             });
                             db.transactions.insertOne({
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Inc",
                                         "Currency": "Byn",
-                                        "Amount": ammountByn
+                                        "Amount": ammountByn,
+                                        "AccountId":"PurseByn",
+                                        "OperationName" : "Currency Exchange"
                             });
                             cashFlowArray[i]['Usd'] = usd;
                             cashFlowArray[i]['Byr'] = byr;
@@ -209,13 +259,17 @@ function exchange(){
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Inc",
                                     "Currency": "Usd",
-                                    "Amount": ammountUsd
+                                    "Amount": ammountUsd,
+                                    "AccountId":"SafeUsd",
+                                    "OperationName" : "Currency Exchange"
                                 });
                                 db.transactions.insertOne({
                                             "Date": cashFlowArray[i]["Date"],
                                             "Type": "Exp",
                                             "Currency": "Byn",
-                                            "Amount": Math.abs(ammountByn)
+                                            "Amount": Math.abs(ammountByn),
+                                            "AccountId":"PurseByn",
+                                            "OperationName" : "Currency Exchange"
                                 });
                                 cashFlowArray[i]['Usd'] = usd;
                                 cashFlowArray[i]['Byr'] = byr;
@@ -233,13 +287,17 @@ function exchange(){
                                     "Date": cashFlowArray[i]["Date"],
                                     "Type": "Inc",
                                     "Currency": "Usd",
-                                    "Amount": ammountUsd
+                                    "Amount": ammountUsd,
+                                    "AccountId":"SafeUsd",
+                                    "OperationName" : "Currency Exchange"
                                 });
                                 db.transactions.insertOne({
                                             "Date": cashFlowArray[i]["Date"],
                                             "Type": "Exp",
                                             "Currency": "Byn",
-                                            "Amount": Math.abs(ammountByn)
+                                            "Amount": Math.abs(ammountByn),
+                                            "AccountId":"PurseByn",
+                                            "OperationName" : "Currency Exchange"
                                 });
                                 cashFlowArray[i]['Usd'] = usd;
                                 cashFlowArray[i]['Byr'] = byr;
@@ -256,3 +314,6 @@ function exchange(){
     // db.cashFlow.insertMany(cashFlowArray,{"ordered":false,w:0})
 }
 exchange();
+
+
+// db.transactions.aggregate([{$match:{"AccountId":"PurseByr",Type:"Exp"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}])
