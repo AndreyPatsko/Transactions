@@ -145,6 +145,7 @@ function exchange(){
                                 cashFlowArray[i]['Byr'] = byr;
 
                                 var PurseByrExp = db.transactions.aggregate([{$match:{"AccountId":"PurseByr",Type:"Exp"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
+                                var PurseByrInc = db.transactions.aggregate([{$match:{"AccountId":"PurseByr",Type:"Inc"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
                                 var CardByrExp = db.transactions.aggregate([{$match:{"AccountId":"CardByr",Type:"Exp"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
                                 var CardByrInc = db.transactions.aggregate([{$match:{"AccountId":"CardByr",Type:"Inc"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
 
@@ -153,7 +154,7 @@ function exchange(){
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Exp",
                                         "Currency": "Byr",
-                                        "Amount":0 - PurseByrExp[0].Amount,
+                                        "Amount":(PurseByrInc[0].Amount - PurseByrExp[0].Amount),
                                         "AccountId":"PurseByr",
                                         "OperationName" : "Transfer"
                                 });
@@ -161,7 +162,7 @@ function exchange(){
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Exp",
                                         "Currency": "Byr",
-                                        "Amount": CardByrInc[0].Amount - CardByrExp[0].Amount,
+                                        "Amount": (CardByrInc[0].Amount - CardByrExp[0].Amount),
                                         "AccountId":"CardByr",
                                         "OperationName" : "Transfer"
                                 });
@@ -169,7 +170,7 @@ function exchange(){
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Inc",
                                         "Currency": "Byn",
-                                        "Amount": 0 - Math.round(PurseByrExp[0].Amount/10000),
+                                        "Amount": Math.round((PurseByrInc[0].Amount - PurseByrExp[0].Amount)/10000),
                                         "AccountId":"PurseByn",
                                         "OperationName" : "Transfer"
                                 });
@@ -177,7 +178,7 @@ function exchange(){
                                         "Date": cashFlowArray[i]["Date"],
                                         "Type": "Inc",
                                         "Currency": "Byn",
-                                        "Amount":0 - Math.round((CardByrInc[0].Amount - CardByrExp[0].Amount)/10000),
+                                        "Amount":Math.round((CardByrInc[0].Amount - CardByrExp[0].Amount)/10000),
                                         "AccountId":"PurseByr",
                                         "OperationName" : "Transfer"
                                 });
