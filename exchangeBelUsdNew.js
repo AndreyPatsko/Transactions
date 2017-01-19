@@ -179,7 +179,7 @@ function exchange(){
                                         "Type": "Inc",
                                         "Currency": "Byn",
                                         "Amount":Math.round((CardByrInc[0].Amount - CardByrExp[0].Amount)/10000),
-                                        "AccountId":"PurseByr",
+                                        "AccountId":"CardByn",
                                         "OperationName" : "Transfer"
                                 });
                                 for(var j = i+1;j < cashFlowArray.length; j++){
