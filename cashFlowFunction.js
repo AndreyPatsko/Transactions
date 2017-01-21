@@ -36,7 +36,7 @@ function create(){
                     Byr -= transactionsOfDateArray[j]["Amount"];
                     break;
                     case "Byn":
-                    Byn -= transactionsOfDateArray[j]["Amount"];
+                    Byn = (Math.round((Byn - transactionsOfDateArray[j]["Amount"])*100))/100;
                     break;
                     case "Usd":
                     Usd -= transactionsOfDateArray[j]["Amount"];
@@ -48,7 +48,7 @@ function create(){
                     Byr += transactionsOfDateArray[j]["Amount"];
                     break;
                     case "Byn":
-                    Byn += transactionsOfDateArray[j]["Amount"];
+                    Byn = (Math.round((Byn + transactionsOfDateArray[j]["Amount"])*100))/100;
                     break;
                     case "Usd":
                     Usd += transactionsOfDateArray[j]["Amount"];
