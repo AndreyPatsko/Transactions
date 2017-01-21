@@ -93,15 +93,16 @@ function lend(){
                 // var CardByrExp = db.transactions.aggregate([{$match:{"AccountId":"CardByr",Type:"Exp"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
                 // var CardByrInc = db.transactions.aggregate([{$match:{"AccountId":"CardByr",Type:"Inc"}},{$group:{_id:null,Amount:{$sum:"$Amount"}}}]).toArray();
 
-
+                var last = db.transactions.find({Date:cashFlowArray[i]["Date"],"AccountId" : "PurseByr"}).toArray();
+                var lastAmount = last[0]["Amount"];
                 db.transactions.updateOne({"AccountId":"PurseByr","OperationName" : "Transfer"},
-                                          {$set:{"Amount":(PurseByrInc[0].Amount - PurseByrExp[0].Amount)}});
+                                          {$set:{"Amount":lastAmount + (PurseByrInc[0].Amount - PurseByrExp[0].Amount)}});
 
                 // db.transactions.updateOne({"AccountId":"CardByr","OperationName" : "Transfer"},
                 //                           {$set:{"Amount":(CardByrInc[0].Amount - CardByrExp[0].Amount)}});
 
                 db.transactions.updateOne({"AccountId":"PurseByn","OperationName" : "Transfer"},
-                                          {$set:{"Amount":Math.round((PurseByrInc[0].Amount - PurseByrExp[0].Amount)/10000)}});
+                                          {$set:{"Amount":Math.round((lastAmount + (PurseByrInc[0].Amount - PurseByrExp[0].Amount))/10000)}});
 
                 // db.transactions.updateOne({"AccountId":"CardByn","OperationName" : "Transfer"},
                 //                           {$set:{"Amount":Math.round((CardByrInc[0].Amount - CardByrExp[0].Amount)/10000)}});
