@@ -6,9 +6,9 @@ function randomMinMax(min, max) {
   }
 
 var friendsArray = [
-    {"_id":"Vasily","Name":"Vasily"},
-    {"_id":"Dmitry","Name":"Dmitry"},
-    {"_id":"Sergey","Name":"Sergey"}
+    {"Name":"Vasily"},
+    {"Name":"Dmitry"},
+    {"Name":"Sergey"}
 ]
 
 // main function

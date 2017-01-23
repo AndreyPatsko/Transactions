@@ -1,23 +1,13 @@
-db.transactions.aggregate([{$match:{"FriendId":{$exists:true}}},
-                            {$project:
-                                {"_id":["$FriendId"],
-                                    "debts":[{"Currency":"$Currency", "Total": "$Amount"}]}}
-                                    
-                                    ])
-                                    
-db.transactions.aggregate([{$match:{"FriendId":{$exists:true}}},
-                            {$group:{_id:"$FriendId", debts:{$push: {"Currency":"$Currency", "Amount":"$Amount"}}}}
-                                    
-                                    ])
-
-
-
 
 db.transactions.aggregate([{$match:{"FriendId":{$exists:true}}},
-                            {$project:
-                                {"_id":["$FriendId"],"Currency":"$Currency", "Amount": "$Amount"}},
-                                    {$group:{_id:"$_id",debts:{$push:{"Currency":"$Currency", "Total":"$Amount"}}}}
-                                    
-                                    ])
-                                     
-
+                                    {$group:{_id:{friend:"$FriendId",currency:"$Currency"},Amount:{$sum:"$Amount"}}},
+                                    {$project:{_id:"$_id.friend",currency:"$_id.currency",amount:"$Amount"}},
+                                    {$group:{_id:"$_id",debts:{$push:{currency:"$currency",total:"$amount"}}}},
+                                    {$lookup:{
+                                        from:"friends",
+                                        localField:"_id",
+                                        foreignField:"_id",
+                                        as:"_id"
+                                        }},
+                                     {$project:{"_id":"$_id.Name","debts":1}} 
+])
